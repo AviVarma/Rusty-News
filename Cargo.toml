@@ -10,3 +10,14 @@ crossterm = "0.26.1"
 dotenv = "0.15.0"
 newsapi = {path = "./newsapi"}
 termimad = "0.23.0"
+
+[package.metadata.generate-rpm]
+name = "rusty-news-generate-rpm"
+version = "0.1.0"
+edition = "2023"
+license = "MIT"
+description = "A simple CLI program that gets the top headlines for the day!"
+repository = "https://github.com/AviVarma/Rusty-News"
+assets = [
+    { source = "target/release/Rusty-News", dest = "/home/avarma/Rusty-News", mode = "755" }
+]
