@@ -2,15 +2,16 @@ mod theme;
 
 use std::error::Error;
 use dotenv::dotenv;
+use newsapi::{Country, Endpoint, NewsAPI, Article};
 
-use newsapi::{Articles, get_articles};
+// use newsapi::{Articles, get_articles};
 
-fn render_artcles(articles: &Articles){
+fn render_artcles(articles: &Vec<Article>){
     let theme = theme::default();
     theme.print_text("# Top Headlines For the Day\n\n");
-    for a in &articles.articles{
-        theme.print_text(&format!("` {}`", a.title));
-        theme.print_text(&format!("> *{}*", a.url));
+    for a in articles{
+        theme.print_text(&format!("` {}`", a.title()));
+        theme.print_text(&format!("> *{}*", a.url()));
         theme.print_text("---");
     }
 }
@@ -20,15 +21,12 @@ fn main() -> Result<(), Box<dyn Error>>{
 
     let api_key = std::env::var("API_KEY")?;
 
-    let url: &str = 
-    "https://newsapi.org/v2/top-headlines?sources=bbc-news&apiKey=";
+    let mut newsapi = NewsAPI::new(&api_key);
+    newsapi.endpoint(Endpoint::TopHeadlines).country(Country::Us);
 
-    let url = format!("{}{}", url, api_key);
+    let newsapi_response = newsapi.fetch()?;
 
-
-    let articles: Articles = get_articles(&url)?;
-
-    render_artcles(&articles);
+    render_artcles(&newsapi_response.articles());
 
     Ok(())
 }
